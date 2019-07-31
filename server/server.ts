@@ -1,7 +1,8 @@
 import * as restify from 'restify';
-import {environment} from './common/environment';
-import {Router} from './common/router';
+import {environment} from '../common/environment';
+import {Router} from '../common/router';
 import * as mongoose from 'mongoose';
+import {mergePatchBodyParser} from './merge-patch.parser';
 
 export class Server {
 
@@ -25,6 +26,7 @@ export class Server {
 
                 this.application.use(restify.plugins.queryParser());// Faz o Parse dos paramêtros que vem na requisição (URL).
                 this.application.use(restify.plugins.bodyParser());// Faz o Parse do body que vem na requisição (URL).
+                this.application.use(mergePatchBodyParser);// Faz o Parse do body que vem na requisição (URL) usando o verbo PATCH.
                 
                 //Routes
                 for (let router of routers){

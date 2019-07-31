@@ -28,6 +28,33 @@ class UsersRouter extends router_1.Router {
                 return next();
             });
         });
+        application.put('/users/:id', (req, resp, next) => {
+            const options = { overwrite: true };
+            users_model_1.User.update({ _id: req.params.id }, req.body, options) //Arg1: Captura o id do paramêtro, Arg2: Captura o body da requisição (URL);
+                .exec() //Aqui ele recebe um query, o .exec executa essa query;
+                .then(result => {
+                if (result.n) { //Result.n trás a quantidade de linhas que foram afetadas no update;
+                    return users_model_1.User.findById(req.params.id).exec();
+                }
+                else {
+                    resp.send(404);
+                }
+            }).then(user => {
+                resp.json(user);
+                return next();
+            });
+        });
+        application.patch('/users/:id', (req, resp, next) => {
+            const options = { new: true }; //Força retornar o obj novo atualizado
+            users_model_1.User.findByIdAndUpdate(req.params.id, req.body, options).then(user => {
+                if (user) {
+                    resp.json(user);
+                    return next();
+                }
+                resp.send(404);
+                return next();
+            });
+        });
     }
 }
 exports.usersRouter = new UsersRouter();
